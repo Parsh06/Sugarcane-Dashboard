@@ -5,10 +5,10 @@ const metrics = [
   {
     key: "yield",
     label: "Predicted Yield",
-    help: "How much cane you can expect per acre based on today’s inputs.",
+    help: "How much cane you can expect per hectare based on today's inputs.",
     icon: TrendingUp,
     placeholder: "—",
-    suffix: "t/acre",
+    suffix: "t/hectare",
   },
   {
     key: "sucrose",
@@ -36,15 +36,15 @@ export function HeroStats({
   historyCount: number
 }) {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-600 via-emerald-500 to-amber-500 p-6 text-white shadow-xl">
+    <section className="relative overflow-hidden rounded-3xl border-0 bg-gradient-to-r from-emerald-600 via-emerald-500 to-amber-500 p-8 text-white shadow-2xl mb-8">
       <div className="absolute inset-0 opacity-10 mix-blend-soft-light">
         <div className="h-full w-full bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.8),_transparent_45%)]" />
       </div>
-      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="space-y-3">
-          <p className="text-sm uppercase tracking-wide text-white/80">Field summary</p>
-          <h2 className="text-2xl font-semibold leading-tight">Simple numbers you can act on today</h2>
-          <p className="text-sm text-white/85">
+      <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-4 max-w-xl">
+          <p className="text-sm uppercase tracking-wider text-white/90 font-semibold">Field Summary</p>
+          <h2 className="text-3xl font-bold leading-tight">Simple numbers you can act on today</h2>
+          <p className="text-base text-white/90 leading-relaxed">
             Enter soil + weather details on the left. We translate them into predicted harvest, sugar content, and a
             fertilizer plan—no agronomy jargon required.
           </p>
@@ -64,26 +64,26 @@ export function HeroStats({
             return (
               <div
                 key={metric.key}
-                className="rounded-2xl border border-white/25 bg-white/10 p-4 text-left backdrop-blur-sm transition hover:bg-white/20"
+                className="rounded-2xl border-2 border-white/30 bg-white/15 p-5 text-left backdrop-blur-md transition-all hover:bg-white/25 hover:scale-105 hover:shadow-xl"
               >
-                <div className="flex items-center gap-2 text-sm text-white/80">
+                <div className="flex items-center gap-2 text-sm text-white/90 font-medium mb-2">
                   <Icon className="h-4 w-4" aria-hidden="true" />
                   <span>{metric.label}</span>
                 </div>
-                <p className="mt-2 text-2xl font-semibold">
+                <p className="text-3xl font-bold mb-1">
                   {value}
-                  <span className="text-base font-medium text-white/70"> {metric.suffix}</span>
+                  <span className="text-lg font-semibold text-white/80"> {metric.suffix}</span>
                 </p>
-                <p className="mt-1 text-xs text-white/75">{metric.help}</p>
+                <p className="text-xs text-white/80 leading-relaxed">{metric.help}</p>
               </div>
             )
           })}
-          <div className="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur-sm transition hover:bg-white/15">
-            <div className="flex items-center gap-2 text-sm text-white/80">
+          <div className="rounded-2xl border-2 border-white/30 bg-white/15 p-5 backdrop-blur-md transition-all hover:bg-white/25 hover:scale-105 hover:shadow-xl">
+            <div className="flex items-center gap-2 text-sm text-white/90 font-medium mb-2">
               <History className="h-4 w-4" />
               Runs Logged
             </div>
-            <p className="mt-2 text-2xl font-semibold">{historyCount}</p>
+            <p className="text-3xl font-bold">{historyCount}</p>
           </div>
         </div>
       </div>

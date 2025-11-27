@@ -10,10 +10,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
+import { Sprout, Calendar, MapPin, Thermometer, Droplets, Wind, Waves } from "lucide-react"
 import type { FarmerInputSnapshot, PredictionResult } from "@/types/prediction"
 
-const SOIL_TYPES = ["Alluvial", "Black", "Red", "Laterite", "Sandy Loam", "Clay"]
-const SEASONS = ["Autumn", "Spring", "Summer", "Monsoon", "Winter"]
+const SOIL_TYPES = ["Loamy", "Clay", "Sandy", "Red"]
+const SEASONS = ["Kharif", "Rabi", "Summer"]
 
 export function FarmerForm({
   onAnalyze,
@@ -41,10 +42,20 @@ export function FarmerForm({
     const parsedHumidity = typeof humidity === "string" ? Number.parseFloat(humidity) : humidity
     const parsedMoisture = typeof moisture === "string" ? Number.parseFloat(moisture) : moisture
 
-    if (!soilType || !season || !parsedArea || !parsedTemp || !parsedRain || !parsedHumidity || !parsedMoisture) {
+    const missingFields: string[] = []
+    if (!soilType) missingFields.push("Soil Type")
+    if (!season) missingFields.push("Season")
+    if (!parsedArea || parsedArea <= 0) missingFields.push("Cultivated Area")
+    if (!parsedTemp || parsedTemp <= 0) missingFields.push("Temperature")
+    if (!parsedRain || parsedRain < 0) missingFields.push("Rainfall")
+    if (!parsedHumidity || parsedHumidity < 0 || parsedHumidity > 100) missingFields.push("Humidity")
+    if (!parsedMoisture || parsedMoisture < 0 || parsedMoisture > 100) missingFields.push("Soil Moisture")
+
+    if (missingFields.length > 0) {
       toast({
-        title: "Missing details",
-        description: "All fields are required to generate predictions.",
+        title: "Missing or invalid fields",
+        description: `Please fill all required fields: ${missingFields.join(", ")}`,
+        variant: "destructive",
       })
       return
     }
@@ -79,13 +90,13 @@ export function FarmerForm({
 
       toast({
         title: "Analysis ready",
-        description: "Insights updated with live model predictions.",
+        description: "Sugarcane yield predictions have been generated successfully.",
       })
     } catch (error) {
       console.error("Prediction error", error)
       toast({
         title: "Prediction failed",
-        description: "Unable to reach the model service. Please try again.",
+        description: "Unable to generate predictions. Please check your inputs and try again.",
         variant: "destructive",
       })
     } finally {
@@ -94,13 +105,23 @@ export function FarmerForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className={cn("grid grid-cols-1 gap-4", className)}>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="grid gap-2">
-          <Label htmlFor="soilType">Soil Type</Label>
-          <Select value={soilType} onValueChange={setSoilType}>
-            <SelectTrigger id="soilType" aria-label="Select soil type">
-              <SelectValue placeholder="Select soil" />
+    <form onSubmit={handleSubmit} className={cn("grid grid-cols-1 gap-5", className)}>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="grid gap-2.5">
+          <Label htmlFor="soilType" className="flex items-center gap-2 text-sm font-semibold">
+            <Sprout className="h-4 w-4 text-emerald-600" />
+            Soil Type <span className="text-red-500">*</span>
+          </Label>
+          <Select value={soilType} onValueChange={setSoilType} required>
+            <SelectTrigger 
+              id="soilType" 
+              aria-label="Select soil type"
+              className={cn(
+                "h-11 border-2 transition-all",
+                !soilType ? "border-red-200 focus:border-red-400" : "border-emerald-200 focus:border-emerald-400"
+              )}
+            >
+              <SelectValue placeholder="Select soil type" />
             </SelectTrigger>
             <SelectContent>
               {SOIL_TYPES.map((s) => (
@@ -111,10 +132,20 @@ export function FarmerForm({
             </SelectContent>
           </Select>
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="season">Season</Label>
-          <Select value={season} onValueChange={setSeason}>
-            <SelectTrigger id="season" aria-label="Select season">
+        <div className="grid gap-2.5">
+          <Label htmlFor="season" className="flex items-center gap-2 text-sm font-semibold">
+            <Calendar className="h-4 w-4 text-emerald-600" />
+            Season <span className="text-red-500">*</span>
+          </Label>
+          <Select value={season} onValueChange={setSeason} required>
+            <SelectTrigger 
+              id="season" 
+              aria-label="Select season"
+              className={cn(
+                "h-11 border-2 transition-all",
+                !season ? "border-red-200 focus:border-red-400" : "border-emerald-200 focus:border-emerald-400"
+              )}
+            >
               <SelectValue placeholder="Select season" />
             </SelectTrigger>
             <SelectContent>
@@ -128,9 +159,12 @@ export function FarmerForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="grid gap-2">
-          <Label htmlFor="area">Cultivated Area (acre)</Label>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="grid gap-2.5">
+          <Label htmlFor="area" className="flex items-center gap-2 text-sm font-semibold">
+            <MapPin className="h-4 w-4 text-emerald-600" />
+            Cultivated Area (hectares) <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="area"
             type="number"
@@ -138,22 +172,38 @@ export function FarmerForm({
             step="0.01"
             placeholder="e.g., 3.5"
             value={area}
+            required
             onChange={(e) => setArea(e.target.value === "" ? "" : Number(e.target.value))}
+            className={cn(
+              "h-11 border-2 transition-all",
+              (!area || area <= 0) ? "border-red-200 focus:border-red-400" : "border-emerald-200 focus:border-emerald-400"
+            )}
           />
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="temperature">Avg Temperature (°C)</Label>
+        <div className="grid gap-2.5">
+          <Label htmlFor="temperature" className="flex items-center gap-2 text-sm font-semibold">
+            <Thermometer className="h-4 w-4 text-emerald-600" />
+            Avg Temperature (°C) <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="temperature"
             type="number"
             step="0.1"
             placeholder="e.g., 27"
             value={temperature}
+            required
             onChange={(e) => setTemperature(e.target.value === "" ? "" : Number(e.target.value))}
+            className={cn(
+              "h-11 border-2 transition-all",
+              (!temperature || temperature <= 0) ? "border-red-200 focus:border-red-400" : "border-emerald-200 focus:border-emerald-400"
+            )}
           />
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="rainfall">Rainfall (mm)</Label>
+        <div className="grid gap-2.5">
+          <Label htmlFor="rainfall" className="flex items-center gap-2 text-sm font-semibold">
+            <Droplets className="h-4 w-4 text-emerald-600" />
+            Rainfall (mm) <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="rainfall"
             type="number"
@@ -161,14 +211,22 @@ export function FarmerForm({
             step="1"
             placeholder="e.g., 900"
             value={rainfall}
+            required
             onChange={(e) => setRainfall(e.target.value === "" ? "" : Number(e.target.value))}
+            className={cn(
+              "h-11 border-2 transition-all",
+              (!rainfall || rainfall < 0) ? "border-red-200 focus:border-red-400" : "border-emerald-200 focus:border-emerald-400"
+            )}
           />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="grid gap-2">
-          <Label htmlFor="humidity">Humidity (%)</Label>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="grid gap-2.5">
+          <Label htmlFor="humidity" className="flex items-center gap-2 text-sm font-semibold">
+            <Wind className="h-4 w-4 text-emerald-600" />
+            Humidity (%) <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="humidity"
             type="number"
@@ -177,11 +235,19 @@ export function FarmerForm({
             step="1"
             placeholder="e.g., 70"
             value={humidity}
+            required
             onChange={(e) => setHumidity(e.target.value === "" ? "" : Number(e.target.value))}
+            className={cn(
+              "h-11 border-2 transition-all",
+              (!humidity || humidity < 0 || humidity > 100) ? "border-red-200 focus:border-red-400" : "border-emerald-200 focus:border-emerald-400"
+            )}
           />
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="moisture">Soil Moisture (%)</Label>
+        <div className="grid gap-2.5">
+          <Label htmlFor="moisture" className="flex items-center gap-2 text-sm font-semibold">
+            <Waves className="h-4 w-4 text-emerald-600" />
+            Soil Moisture (%) <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="moisture"
             type="number"
@@ -190,17 +256,22 @@ export function FarmerForm({
             step="1"
             placeholder="e.g., 45"
             value={moisture}
+            required
             onChange={(e) => setMoisture(e.target.value === "" ? "" : Number(e.target.value))}
+            className={cn(
+              "h-11 border-2 transition-all",
+              (!moisture || moisture < 0 || moisture > 100) ? "border-red-200 focus:border-red-400" : "border-emerald-200 focus:border-emerald-400"
+            )}
           />
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-end gap-3 pt-2">
+      <div className="flex items-center justify-end gap-3 pt-4">
         <Button
           type="button"
           variant="outline"
-          className="bg-transparent hover:bg-muted"
+          className="border-2 hover:bg-muted/80 transition-all"
           onClick={() => {
             setSoilType("")
             setSeason("")
@@ -213,16 +284,22 @@ export function FarmerForm({
         >
           Reset
         </Button>
-        <Button type="submit" aria-label="Get Analysis" disabled={submitting}>
-          {submitting ? "Running model..." : "Get Analysis"}
+        <Button 
+          type="submit" 
+          aria-label="Get Analysis" 
+          disabled={submitting}
+          className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed px-6"
+        >
+          {submitting ? (
+            <span className="flex items-center gap-2">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              Predicting output...
+            </span>
+          ) : (
+            "Get Analysis"
+          )}
         </Button>
       </div>
-
-      <Card className="mt-2 border-dashed">
-        <CardContent className="py-3 text-xs text-muted-foreground">
-          Predictions are generated locally via the bundled RandomForest model trained on the provided dataset.
-        </CardContent>
-      </Card>
     </form>
   )
 }
