@@ -7,9 +7,7 @@ import { FarmerForm } from "@/components/farmer-form"
 import { YieldInsights } from "@/components/yield-insights"
 import { PredictionHistory } from "@/components/prediction-history"
 import { HeroStats } from "@/components/hero-stats"
-import { SummaryPanel } from "@/components/summary-panel"
 import { ActionGuide } from "@/components/action-guide"
-import { PredictionCharts } from "@/components/prediction-charts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Leaf } from "lucide-react"
@@ -25,9 +23,6 @@ export default function HomePage() {
     const t = setTimeout(() => setLoading(false), 1200)
     return () => clearTimeout(t)
   }, [])
-
-  const readinessScores =
-    inputSnapshot && prediction ? calculateReadinessScores(inputSnapshot, prediction) : null
 
   if (loading) {
     return <Preloader />
@@ -79,8 +74,6 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <PredictionCharts prediction={prediction} input={inputSnapshot} />
-
             <ActionGuide input={inputSnapshot} prediction={prediction} />
           </div>
 
@@ -128,18 +121,6 @@ export default function HomePage() {
               </Card>
             ) : null}
 
-            {inputSnapshot && readinessScores ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Readiness Scores</CardTitle>
-                  <CardDescription>Composite gauges for soil, water, fertigation & rainfall.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <SummaryPanel {...readinessScores} />
-                </CardContent>
-              </Card>
-            ) : null}
-
             <YieldInsights prediction={prediction} />
           </div>
         </section>
@@ -150,16 +131,6 @@ export default function HomePage() {
       </main>
     </>
   )
-}
-
-function calculateReadinessScores(input: FarmerInputSnapshot, prediction: PredictionResult) {
-  const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value))
-  const soilScore = clamp(input.moisture * 2, 0, 100)
-  const waterScore = clamp(input.humidity + input.rainfall / 30, 0, 100)
-  const fertScore = clamp(prediction.predictedYield * 1.1, 0, 100)
-  const rainScore = clamp((input.rainfall / 1500) * 100, 0, 100)
-  const composite = Math.round((soilScore + waterScore + fertScore + rainScore) / 4)
-  return { soilScore, waterScore, fertScore, rainScore, composite }
 }
 
 function DecorativeBackground() {
