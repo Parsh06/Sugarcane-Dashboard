@@ -1,0 +1,155 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #374151; /* gray-700 for text */
+
+  --card: #ffffff;
+  --card-foreground: #374151;
+
+  --popover: #ffffff;
+  --popover-foreground: #374151;
+
+  --primary: #10b981; /* emerald */
+  --primary-foreground: #ffffff;
+
+  --secondary: #fbbf24; /* amber */
+  --secondary-foreground: #374151;
+
+  --muted: #f9fafb; /* light gray surface */
+  --muted-foreground: #6b7280; /* gray-500 text */
+
+  --accent: #fbbf24; /* amber accents */
+  --accent-foreground: #374151;
+
+  --destructive: #ef4444; /* red-500 */
+  --destructive-foreground: #ffffff;
+
+  --border: #e5e7eb; /* gray-200 */
+  --input: #ffffff; /* white inputs */
+  --ring: rgba(16, 185, 129, 0.5); /* emerald focus ring */
+
+  /* Chart palette */
+  --chart-1: #10b981; /* emerald */
+  --chart-2: #fbbf24; /* amber */
+  --chart-3: #3b82f6; /* blue */
+  --chart-4: #9333ea; /* purple */
+  --chart-5: #ef4444; /* red */
+
+  --radius: 0.5rem; /* softer rounding */
+
+  /* Sidebar */
+  --sidebar: #f9fafb; /* light gray */
+  --sidebar-foreground: #374151; /* dark gray text */
+  --sidebar-primary: #10b981; /* emerald */
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fbbf24; /* amber */
+  --sidebar-accent-foreground: #374151;
+  --sidebar-border: #e5e7eb; /* gray-200 */
+  --sidebar-ring: rgba(16, 185, 129, 0.5);
+}
+
+.dark {
+  --background: #111827; /* gray-900 */
+  --foreground: #f9fafb; /* gray-50 */
+
+  --card: #111827;
+  --card-foreground: #f9fafb;
+
+  --popover: #111827;
+  --popover-foreground: #f9fafb;
+
+  --primary: #10b981; /* emerald remains brand */
+  --primary-foreground: #ffffff;
+
+  --secondary: #fbbf24; /* amber accent */
+  --secondary-foreground: #111827;
+
+  --muted: #1f2937; /* gray-800 surface */
+  --muted-foreground: #9ca3af; /* gray-400 text */
+
+  --accent: #1f2937; /* subtle dark accent bg */
+  --accent-foreground: #f9fafb;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #1f2937; /* gray-800 */
+  --input: #1f2937;
+  --ring: rgba(16, 185, 129, 0.5);
+
+  /* Charts remain consistent for legibility in dark */
+  --chart-1: #10b981;
+  --chart-2: #fbbf24;
+  --chart-3: #3b82f6;
+  --chart-4: #9333ea;
+  --chart-5: #ef4444;
+
+  /* Sidebar in dark */
+  --sidebar: #0f172a; /* slate-900 */
+  --sidebar-foreground: #f9fafb;
+  --sidebar-primary: #10b981;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fbbf24;
+  --sidebar-accent-foreground: #111827;
+  --sidebar-border: #1f2937;
+  --sidebar-ring: rgba(16, 185, 129, 0.5);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.08), transparent 45%),
+      radial-gradient(circle at 80% 0%, rgba(251, 191, 36, 0.08), transparent 35%);
+    background-attachment: fixed;
+  }
+}
