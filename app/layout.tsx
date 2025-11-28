@@ -5,7 +5,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: "गन्ना लाभ — Sugarcane Intelligence",
+  title: "गन्ना लाभ ",
   description: "Interactive decision support for sugarcane farmers with localized insights.",
 }
 
