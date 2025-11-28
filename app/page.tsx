@@ -26,11 +26,6 @@ export default function HomePage() {
         if (response.ok) {
           const data = await response.json()
           setHistory(data)
-          if (data.length > 0) {
-            const latest = data[0]
-            setInputSnapshot(latest.input)
-            setPrediction(latest.prediction)
-          }
         }
       } catch (error) {
         console.error("Failed to load history:", error)
@@ -39,6 +34,9 @@ export default function HomePage() {
       }
     }
     loadHistory()
+    // Reset current prediction and input on page load
+    setInputSnapshot(null)
+    setPrediction(null)
   }, [])
 
   if (loading) {
