@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-DATA_PATH = BASE_DIR / "dataset" / "finalSugarcaneDataset_cleaned.csv"
+DATA_PATH = BASE_DIR / "dataset" / "finalSugarcaneDataset_cleaned_copy.csv"
 ARTIFACT_DIR = Path(__file__).resolve().parent / "artifacts"
 ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
 MODEL_PATH = ARTIFACT_DIR / "rf_model.pkl"
